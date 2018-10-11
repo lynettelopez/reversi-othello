@@ -13,5 +13,20 @@
 *.tar.gz
 *.rar
 
+# Eclipse Settings
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
+*.launch
+.externalToolBuilders/
+
 # IntelliJ Settings
 .idea

@@ -23,7 +23,7 @@ import com.google.common.collect.Ordering;
  */
 
 public class Board {
-	private int fix;
+	private int size;
 	private Player player;
 	private PMap<Square, Player> owners;
 	private PSequence<Move> moves;

@@ -21,8 +21,9 @@ import com.google.common.collect.Ordering;
  * so far by which players, which pieces have been captured, and who the next
  * player to play should be.
  */
+
 public class Board {
-	private int size;
+	private int fix;
 	private Player player;
 	private PMap<Square, Player> owners;
 	private PSequence<Move> moves;

@@ -16,6 +16,8 @@
 # Eclipse Settings
 .metadata
 bin/
+.classpath/
+.project/
 tmp/
 *.tmp
 *.bak

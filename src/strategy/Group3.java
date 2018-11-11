@@ -11,10 +11,9 @@ import reversi.Player;
 
 /**
  * 
- * Uses the MiniMax algorithm to play a move in a game of Tic Tac Toe.
+ * Uses the MiniMax algorithm to play a move in a game of Othello/Reversi.
  * 
  */
-
 public class Group3 implements Strategy {
 
 	private static double maxPly;
@@ -23,7 +22,6 @@ public class Group3 implements Strategy {
 		run(board.getCurrentPlayer(), board, maxPly);
 	}
 
-	// Implement AlphaBeta pruning -- Update minimax, getMax & getMin methods
 	
 	/**
 	 * 
@@ -42,6 +40,7 @@ public class Group3 implements Strategy {
 		miniMax(player, board, 0, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
 	}
 
+	
 	/**
 	 * 
 	 * The meat of the algorithm.
@@ -64,22 +63,20 @@ public class Group3 implements Strategy {
 
 	}
 
+	
 	private void retrieveBoard(Board board) {
-
 		ArrayList<Move> moves = (ArrayList<Move>) board.getMoves();
-
 		Board newBoard = new Board();
-
+		
 		for (int i = 0; i < moves.size() - 1; i++) {
-
 			newBoard.play(moves.get(i).getSquare());
-
 		}
-
+		
 		board = newBoard;
 
 	}
 
+	
 	/**
 	 * 
 	 * Play the move with the highest score.
@@ -93,64 +90,42 @@ public class Group3 implements Strategy {
 	 * @return the score of the board
 	 * 
 	 */
-
 	private int getMax(Player player, Board board, int currentPly, double alpha, double beta) {
-
 		double bestScore = Double.NEGATIVE_INFINITY;
-
 		Square indexOfBestMove = new Square(-1, -1);
-
+		
 		for (Square theMove : board.getCurrentPossibleSquares()) {
-
 			// Board modifiedBoard = board.getDeepCopy();//TODO change this to be able to
 			// copy the current board
-
 			board.play(theMove);
-
 			int score = miniMax(player, board, currentPly, alpha, beta);
-
 			if (score > alpha) {
-
 				alpha = score;
-
 				indexOfBestMove = theMove;
-
 			}
 
 			retrieveBoard(board);
 
 			if (alpha >= beta)
-
 				break;
 
-			//
-
 			// if (score >= bestScore) {
-
 			// bestScore = score;
-
 			// indexOfBestMove = theMove;
-
 			// }
-
-			//
 
 			// if(bestScore >= beta) {
-
 			// return (int)bestScore;
-
 			// }
-
 		}
 
 		if (indexOfBestMove != new Square(-1, -1))
-
 			board.play(indexOfBestMove);
 
 		return (int) bestScore;
-
 	}
 
+	
 	/**
 	 * 
 	 * Play the move with the lowest score.
@@ -164,43 +139,32 @@ public class Group3 implements Strategy {
 	 * @return the score of the board
 	 * 
 	 */
-
 	private int getMin(Player player, Board board, int currentPly, double alpha, double beta) {
-
 		double bestScore = Double.POSITIVE_INFINITY;// beta
-
 		Square indexOfBestMove = new Square(-1, -1);
 
 		for (Square theMove : board.getCurrentPossibleSquares()) {
-
 			board.play(theMove);
-
 			int score = miniMax(player, board, currentPly, alpha, beta);
-
+			
 			if (score < beta) {
-
 				beta = score;
-
 				indexOfBestMove = theMove;
-
 			}
 
 			retrieveBoard(board);
 
 			if (alpha >= beta)
-
 				break;
-
 		}
 
 		if (indexOfBestMove != new Square(-1, -1))
-
 			board.play(indexOfBestMove);
 
 		return (int) bestScore;
-
 	}
 
+	
 	/**
 	 * 
 	 * Get the score of the board.
@@ -212,9 +176,7 @@ public class Group3 implements Strategy {
 	 * @return the score of the board
 	 * 
 	 */
-
 	private int score(Player player, Board board) {
-
 //		if (player == Player.) {
 //			throw new IllegalArgumentException("Player must be X or O.");
 //		}
@@ -222,27 +184,21 @@ public class Group3 implements Strategy {
 		Player opponent = (player == Player.BLACK) ? Player.WHITE : Player.BLACK;
 
 		if (board.isComplete() && board.getWinner() == player) {
-
 			return Integer.MAX_VALUE;
 
-		} else if (board.isComplete() && board.getWinner() == opponent) {
-
+		} 
+		else if (board.isComplete() && board.getWinner() == opponent) {
 			return Integer.MIN_VALUE;
-
-		} else {
-
+		} 
+		else {
 			Map<Player, Integer> current = board.getPlayerSquareCounts();
-
 			int blackCount = current.get("BLACK");
-
 			int whiteCount = current.get("WHITE");
-
 			return blackCount - whiteCount;
-
 		}
-
 	}
 
+	
 	@Override
 	public Square chooseSquare(Board board) {
 		// TODO Auto-generated method stub

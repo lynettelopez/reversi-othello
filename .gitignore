@@ -30,3 +30,6 @@ local.properties
 
 # IntelliJ Settings
 .idea
+
+# Visual Studio Code Settings
+.vscode

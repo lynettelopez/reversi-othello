@@ -19,7 +19,7 @@ public class Group3 implements Strategy {
 	
 	@Override
 	public Square chooseSquare(Board board) {
-		Node choose = run(board, 5);
+		Node choose = run(board, 2);
 		return choose.square;
 	}
 

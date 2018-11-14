@@ -21,15 +21,16 @@ public class ReversiTournament {
 		Square square = new Square(1, 1);
 
 		//throw new IllegalArgumentException(String.format(message, player, square));
-		int nGames = 1; 
-		long timeout = 10;
+		int nGames = 20; 
+		long timeout = 1;
 		TimeUnit timeoutUnit = TimeUnit.SECONDS;
 
 		// List of the strategies in the tournament 
 		List<Strategy> strategies = Lists.newArrayList();
 
 		strategies.add(new RandomStrategy());
-		strategies.add(new Human());
+		strategies.add(new Group3()); 
+		// strategies.add(new Human());
 
 		// The number of wins of each strategy 
 		Map<Strategy, Integer> wins = Maps.newHashMap();

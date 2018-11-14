@@ -18,7 +18,7 @@ public class Human implements Strategy {
 
   @Override
   public Square chooseSquare(Board board) {
-    //Display the current status of the boad
+    //Display the current status of the board
     System.out.println(board);
     return chooseOne(board.getCurrentPossibleSquares());
   }

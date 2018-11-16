@@ -9,17 +9,17 @@ import reversi.Strategy;
 /**
  * Uses the MiniMax algorithm to play a move in a game of Tic Tac Toe.
  */
-public class Group3 implements Strategy{
+public class Basis implements Strategy{
 
 	private int[][] scoreBoard = {
-			{200, -20, 40, 4, 4, 40, -20, 200},
-			{-20, -20, 2, 2, 2, 2, -20, -20},
-			{40, 2, 20, 4, 4, 20, 2, 40},
+			{200, -2, 20, 4, 4, 10, -2, 200},
+			{-2, -40, 2, 2, 2, 2, -40, -2},
+			{20, 2, 10, 4, 4, 10, 2, 10},
 			{4, 2, 4, 0, 0, 4, 2, 4},
 			{4, 2, 4, 0, 0, 4, 2, 4},
-			{40, 2, 20, 4, 4, 20, 2, 20},
-			{-20, -20, 2, 2, 2, 2, -20, -20},
-			{200, -20, 40, 4, 4, 40, -20, 200}};
+			{20, 2, 10, 4, 4, 10, 2, 20},
+			{-2, -40, 2, 2, 2, 2, -40, -2},
+			{200, -2, 20, 4, 4, 20, -2, 200}};
 
 	private static double maxPly;
 
@@ -41,7 +41,7 @@ public class Group3 implements Strategy{
 			throw new IllegalArgumentException("Maximum depth must be greater than 0.");
 		}
 
-		Group3.maxPly = maxPly;
+		Basis.maxPly = maxPly;
 		return miniMax(board, 0, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
 	}
 
@@ -117,7 +117,6 @@ public class Group3 implements Strategy{
 		if(currentPossibleSquares.size() == 0)
 			return new Node(bestMove, -1000);
 
-		
 		for (Square theMove : currentPossibleSquares) {
 
 			Board newBoard = board.play(theMove);
@@ -195,6 +194,11 @@ public class Group3 implements Strategy{
 		if(blackCount+whiteCount <= 50) {
 			return blackScore - whiteScore - score;
 		}
+//		//midGame, minimize opponent choices
+//		else if(blackCount+whiteCount > 15 && blackCount+whiteCount <= 50) {
+//			int opponentChoice = 2*board.getCurrentPossibleSquares().size();
+//			return blackScore - whiteScore - score - opponentChoice;
+//		}
 		//endGame, flip more chesses at the end
 		//if(blackCount+whiteCount > 54)
 		else {

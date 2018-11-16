@@ -21,23 +21,25 @@ public class ReversiTournament {
 		Square square = new Square(1, 1);
 
 		//throw new IllegalArgumentException(String.format(message, player, square));
-		int nGames = 20; 
-		long timeout = 1;
+		int nGames = 1; 
+		long timeout = 10;
 		TimeUnit timeoutUnit = TimeUnit.SECONDS;
 
 		// List of the strategies in the tournament 
 		List<Strategy> strategies = Lists.newArrayList();
-
-		strategies.add(new RandomStrategy());
-		strategies.add(new Group3()); 
-		// strategies.add(new Human());
-
+		
+		strategies.add(new Group3());
+//		strategies.add(new Group3());
+		strategies.add(new Basis());
+//		strategies.add(new RandomStrategy());
+//		strategies.add(new Human());
+		
 		// The number of wins of each strategy 
 		Map<Strategy, Integer> wins = Maps.newHashMap();
 		for (Strategy strategy : strategies) {
 			wins.put(strategy, 0);
 		}
-
+		long startTime = System.currentTimeMillis();//the start time
 		// Run N rounds, pairing each strategy with each other strategy. There will
 		// actually be 2N games since each strategy gets to be both black and white
 		Board board = new Board();
@@ -80,6 +82,8 @@ public class ReversiTournament {
 		for (Strategy strategy : byWins.sortedCopy(wins.keySet())) {
 			System.out.printf("%4d\t%s\n", wins.get(strategy), strategy.getClass().getName());
 		}
+		long endTime = System.currentTimeMillis();//the time time
+		System.out.println("Processing time: " + (endTime - startTime) + " milliseconds");//process time
 	}
 
 

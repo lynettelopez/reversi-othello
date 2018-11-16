@@ -21,7 +21,6 @@ import com.google.common.collect.Ordering;
  * so far by which players, which pieces have been captured, and who the next
  * player to play should be.
  */
-
 public class Board {
 	private int size;
 	private Player player;
@@ -37,7 +36,6 @@ public class Board {
 	public Board() {
 		this(8, Player.BLACK, TreePVector.<Move> empty(), getInitialOwners(8), getInitialPlayerSquareCounts());
 	}
-
 
 	/**
 	 * Low-level constructor. Intended only for internal use.

@@ -22,7 +22,7 @@ public class ReversiTournament {
 
 		//throw new IllegalArgumentException(String.format(message, player, square));
 		int nGames = 1; 
-		long timeout = 10;
+		long timeout = 1;
 		TimeUnit timeoutUnit = TimeUnit.SECONDS;
 
 		// List of the strategies in the tournament 

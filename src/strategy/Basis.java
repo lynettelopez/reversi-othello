@@ -7,19 +7,19 @@ import reversi.Square;
 import reversi.Player;
 import reversi.Strategy;
 /**
- * Uses the MiniMax algorithm to play a move in a game of Tic Tac Toe.
+ * Uses the Apha beta MiniMax algorithm to play a move in a game of Reversi.
  */
 public class Basis implements Strategy{
 
 	private int[][] scoreBoard = {
-			{200, -2, 20, 4, 4, 10, -2, 200},
-			{-2, -40, 2, 2, 2, 2, -40, -2},
-			{20, 2, 10, 4, 4, 10, 2, 10},
-			{4, 2, 4, 0, 0, 4, 2, 4},
-			{4, 2, 4, 0, 0, 4, 2, 4},
-			{20, 2, 10, 4, 4, 10, 2, 20},
-			{-2, -40, 2, 2, 2, 2, -40, -2},
-			{200, -2, 20, 4, 4, 20, -2, 200}};
+			{100, -5, 20, 5, 5, 20, -5, 100},
+			{-5, -20, 1, 1, 1, 1, -20, -5},
+			{20, 1, 10, 2, 2, 10, 1, 20},
+			{5, 1, 2, 0, 0, 2, 1, 5},
+			{5, 1, 2, 0, 0, 2, 1, 5},
+			{20, 1, 10, 2, 2, 10, 1, 20},
+			{-5, -20, 1, 1, 1, 1, -20, -5},
+			{100, -5, 20, 5, 5, 20, -5, 100}};
 
 	private static double maxPly;
 
@@ -32,11 +32,10 @@ public class Basis implements Strategy{
 
 	/**
 	 * Execute the algorithm.
-	 * @param player        the player that the AI will identify as
-	 * @param board         the Tic Tac Toe board to play on
+	 * @param board         the Reversi board to play on
 	 * @param maxPly        the maximum depth
 	 */
-	public Node run (Board board, double maxPly) {
+	private Node run (Board board, double maxPly) {
 		if (maxPly < 1) {
 			throw new IllegalArgumentException("Maximum depth must be greater than 0.");
 		}
@@ -47,10 +46,9 @@ public class Basis implements Strategy{
 
 	/**
 	 * The meat of the algorithm.
-	 * @param player        the player that the AI will identify as
 	 * @param board         the Reversi board to play on
 	 * @param currentPly    the current depth
-	 * @return              the score of the board
+	 * @return              the best move and the score of the new board if we take that move
 	 */
 	private  Node miniMax (Board board, int currentPly, double alpha, double beta) {
 		if (currentPly++ == maxPly || board.isComplete()) {
@@ -67,10 +65,9 @@ public class Basis implements Strategy{
 
 	/**
 	 * Play the move with the highest score.
-	 * @param player        the player that the AI will identify as
-	 * @param board         the Tic Tac Toe board to play on
+	 * @param board         the Reversi board to play on
 	 * @param currentPly    the current depth
-	 * @return              the score of the board
+	 * @return              the best move and the score of the new board if we take that move
 	 */
 	private Node getMax (Board board, int currentPly, double alpha, double beta) {
 		Square bestMove = new Square(-1, -1);
@@ -95,6 +92,7 @@ public class Basis implements Strategy{
 			if((row == 0 && column == 0 ) || (row == 0 && column == 7) || (row == 7 && column == 0) || (row == 7 && column == 7)) {
 				break;
 			}
+			
 			//alpha-beta pruning 
 			if(alpha >= beta)
 				break;
@@ -106,7 +104,7 @@ public class Basis implements Strategy{
 	/**
 	 * Play the move with the lowest score.
 	 * @param player        the player that the AI will identify as
-	 * @param board         the Tic Tac Toe board to play on
+	 * @param board         the Reversi board to play on
 	 * @param currentPly    the current depth
 	 * @return              the score of the board
 	 */
@@ -117,6 +115,7 @@ public class Basis implements Strategy{
 		if(currentPossibleSquares.size() == 0)
 			return new Node(bestMove, -1000);
 
+		
 		for (Square theMove : currentPossibleSquares) {
 
 			Board newBoard = board.play(theMove);
@@ -140,11 +139,11 @@ public class Basis implements Strategy{
 		return new Node(bestMove, beta);
 	}
 
+
 	/**
 	 * Get the score of the board.
-	 * @param player        the play that the AI will identify as
-	 * @param board         the Tic Tac Toe board to play on
-	 * @return              the score of the board
+	 * @param board         the Reversi board to play on
+	 * @return              the best move and the score of the new board if we take that move
 	 */
 	private int score (Board board) {
 		//if board complete, and the black wins, we return a integer.max_value to indicate that
@@ -164,15 +163,16 @@ public class Basis implements Strategy{
 	/**
 	 * This is a helper score method to calculate score while it is not the end
 	 * @param board
-	 * @return the current score
+	 * @return the current score of the board
 	 */
 	private int currentScore(Board board) {
 		//the difference between the number of black chesses and the number of white chesses
 		Map<Player, Integer> currentM = board.getPlayerSquareCounts();
 		int blackCount = currentM.get(Player.BLACK);
 		int whiteCount = currentM.get(Player.WHITE);
-		int score = 2*(blackCount-whiteCount);
+		int score = (blackCount-whiteCount);
 
+		//the positional score of chesses on the board
 		int whiteScore = 0;
 		int blackScore = 0;
 		Map<Square, Player> PlayerSqr = board.getSquareOwners();
@@ -180,27 +180,21 @@ public class Basis implements Strategy{
 		Set<Square> AllSqr= PlayerSqr.keySet();
 		for(Square sqr: AllSqr) {
 			if(PlayerSqr.get(sqr) == Player.BLACK) {
-				//how many positional score black chess has gain
+				//how many positional score black chess has gained
 				blackScore += scoreBoard[sqr.getRow()][sqr.getColumn()];
 			}
 			else {
-				//how many positional score white chess has gain
+				//how many positional score white chess has gained
 				whiteScore += scoreBoard[sqr.getRow()][sqr.getColumn()];
 			}
 		}
 
 
-		//opening, flip less cheese but gain more good position
+		//opening game, flip less cheese but gain more good position
 		if(blackCount+whiteCount <= 50) {
 			return blackScore - whiteScore - score;
 		}
-//		//midGame, minimize opponent choices
-//		else if(blackCount+whiteCount > 15 && blackCount+whiteCount <= 50) {
-//			int opponentChoice = 2*board.getCurrentPossibleSquares().size();
-//			return blackScore - whiteScore - score - opponentChoice;
-//		}
 		//endGame, flip more chesses at the end
-		//if(blackCount+whiteCount > 54)
 		else {
 			return blackScore - whiteScore + score;
 		}

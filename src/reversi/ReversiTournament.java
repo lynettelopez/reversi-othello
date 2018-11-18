@@ -28,8 +28,8 @@ public class ReversiTournament {
 		// List of the strategies in the tournament 
 		List<Strategy> strategies = Lists.newArrayList();
 		
-		strategies.add(new Group3());
 //		strategies.add(new Group3());
+		strategies.add(new Group3());
 		strategies.add(new Basis());
 //		strategies.add(new RandomStrategy());
 //		strategies.add(new Human());

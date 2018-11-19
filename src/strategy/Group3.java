@@ -1,16 +1,13 @@
 package strategy;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import reversi.*;
 
-import reversi.Board;
-import reversi.Square;
-import reversi.Player;
-import reversi.Strategy;
 /**
- * Uses the Apha beta MiniMax algorithm to play a move in a game of Reversi.
+ * Uses the Alpha-Beta MiniMax algorithm to play a move in a game of Reversi.
  */
-public class Group3 implements Strategy{
+public class Group3 implements Strategy {
 
+	private static double maxDepth;
 	private int[][] scoreBoard = {
 			{100, -5, 20, 5, 5, 20, -5, 100},
 			{-5, -20, 1, 1, 1, 1, -20, -5},
@@ -21,8 +18,7 @@ public class Group3 implements Strategy{
 			{-5, -20, 1, 1, 1, 1, -20, -5},
 			{100, -5, 20, 5, 5, 20, -5, 100}};
 
-	private static double maxPly;
-
+	
 	@Override
 	public Square chooseSquare(Board board) {
 		//look four moves ahead
@@ -30,46 +26,49 @@ public class Group3 implements Strategy{
 		return choose.square;
 	}
 
+	
 	/**
 	 * Execute the algorithm.
 	 * @param board         the Reversi board to play on
-	 * @param maxPly        the maximum depth
+	 * @param maxDepth      the maximum depth
 	 */
-	private Node run (Board board, double maxPly) {
-		if (maxPly < 1) {
+	private Node run (Board board, double maxDepth) {
+		if (maxDepth < 1) {
 			throw new IllegalArgumentException("Maximum depth must be greater than 0.");
 		}
 
-		Group3.maxPly = maxPly;
+		Group3.maxDepth = maxDepth;
 		return miniMax(board, 0, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
 	}
+	
 
 	/**
 	 * The meat of the algorithm.
 	 * @param board         the Reversi board to play on
-	 * @param currentPly    the current depth
+	 * @param currentDepth  the current depth
 	 * @return              the best move and the score of the new board if we take that move
 	 */
-	private  Node miniMax (Board board, int currentPly, double alpha, double beta) {
-		if (currentPly++ == maxPly || board.isComplete()) {
+	private  Node miniMax (Board board, int currentDepth, double alpha, double beta) {
+		if (currentDepth++ == maxDepth || board.isComplete()) {
 			Node current = new Node(null, score(board));
 			return current;
 		}
 		if (board.getCurrentPlayer() == Player.BLACK) {
-			return getMax(board, currentPly, alpha, beta);
+			return getMax(board, currentDepth, alpha, beta);
 		} else {
-			return getMin(board, currentPly, alpha, beta);
+			return getMin(board, currentDepth, alpha, beta);
 		}
 
 	}
+	
 
 	/**
 	 * Play the move with the highest score.
 	 * @param board         the Reversi board to play on
-	 * @param currentPly    the current depth
+	 * @param currentDepth  the current depth
 	 * @return              the best move and the score of the new board if we take that move
 	 */
-	private Node getMax (Board board, int currentPly, double alpha, double beta) {
+	private Node getMax (Board board, int currentDepth, double alpha, double beta) {
 		Square bestMove = new Square(-1, -1);
 		Set<Square> currentPossibleSquares = board.getCurrentPossibleSquares();
 		//if there is no move, return 1000 as the score to make sure that it will not be chosen
@@ -79,7 +78,7 @@ public class Group3 implements Strategy{
 		for (Square theMove : currentPossibleSquares) {
 
 			Board newBoard = board.play(theMove);
-			Node current = miniMax(newBoard, currentPly, alpha, beta);
+			Node current = miniMax(newBoard, currentDepth, alpha, beta);
 
 			if(current.score > alpha) {
 				alpha = current.score;
@@ -101,13 +100,14 @@ public class Group3 implements Strategy{
 		return new Node(bestMove, alpha);
 	}
 
+	
 	/**
 	 * Play the move with the lowest score.
 	 * @param board         the Reversi board to play on
-	 * @param currentPly    the current depth
+	 * @param currentDepth  the current depth
 	 * @return              the best move and the score of the new board if we take that move
 	 */
-	private Node getMin (Board board, int currentPly, double alpha, double beta) {
+	private Node getMin (Board board, int currentDepth, double alpha, double beta) {
 		Square bestMove = new Square(-1, -1);
 		Set<Square> currentPossibleSquares = board.getCurrentPossibleSquares();
 		//if there is no move, return -1000 as the score to make sure that it will not be chosen
@@ -117,7 +117,7 @@ public class Group3 implements Strategy{
 		for (Square theMove : currentPossibleSquares) {
 
 			Board newBoard = board.play(theMove);
-			Node current = miniMax(newBoard, currentPly, alpha, beta);
+			Node current = miniMax(newBoard, currentDepth, alpha, beta);
 
 			if(current.score < beta) {
 				beta = current.score;
@@ -138,6 +138,7 @@ public class Group3 implements Strategy{
 		return new Node(bestMove, beta);
 	}
 
+	
 	/**
 	 * Get the score of the board.
 	 * @param board         the Reversi board to play on
@@ -158,6 +159,7 @@ public class Group3 implements Strategy{
 		}
 	}
 
+	
 	/**
 	 * This is a helper score method to calculate score while it is not the end
 	 * @param board
@@ -175,7 +177,7 @@ public class Group3 implements Strategy{
 		int blackScore = 0;
 		Map<Square, Player> PlayerSqr = board.getSquareOwners();
 
-		Set<Square> AllSqr= PlayerSqr.keySet();
+		Set<Square> AllSqr = PlayerSqr.keySet();
 		for(Square sqr: AllSqr) {
 			if(PlayerSqr.get(sqr) == Player.BLACK) {
 				//how many positional score black chess has gained
@@ -187,9 +189,8 @@ public class Group3 implements Strategy{
 			}
 		}
 
-
 		//opening game, flip less cheese but gain more good position
-		if(blackCount+whiteCount <= 50) {
+		if (blackCount+whiteCount <= 50) {
 			return blackScore - whiteScore - score;
 		}
 		//endGame, flip more chesses at the end
@@ -198,6 +199,7 @@ public class Group3 implements Strategy{
 		}
 	}
 
+	
 	/**
 	 * A private class contains a square, and the score that will get if make that move
 	 *
